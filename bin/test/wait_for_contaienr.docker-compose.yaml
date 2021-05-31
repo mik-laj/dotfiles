@@ -1,0 +1,48 @@
+services:
+
+  db:
+    image: debian:buster-slim
+    command:
+      - bash
+      - -c
+      - |
+        echo "Start"
+        for x in $$(seq 1 5); do sleep 1; echo "sleep $${x}/5"; done;
+        touch /migartion-done;
+        echo "OK";
+        for x in $$(seq 1 15); do sleep 1; echo "sleep $${x}/600";done;
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /migartion-done"]
+      interval: "1s"
+      retries: 30
+
+  app-init:
+    image: debian:buster-slim
+    command:
+      - bash
+      - -c
+      - |
+        echo "OK";
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    image: debian:buster-slim
+    command:
+      - bash
+      - -c
+      - |
+        echo "Start"
+        for x in $$(seq 1 5); do sleep 1; echo "sleep $${x}/5"; done;
+        touch /webserver-started"
+        for x in $$(seq 1 15); do sleep 1; echo "sleep $${x}/600";done;
+    healthcheck:
+      test: [ "CMD-SHELL", "test -f /webserver-started" ]
+      interval: "1s"
+      retries: 30
+    depends_on:
+      app-init:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
