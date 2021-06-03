@@ -22,7 +22,7 @@ SCRIPT_NAME="$( basename "${BASH_SOURCE[0]}")"
 # Drop "-update" suffix, if exists
 TOOL_NAME="$(echo "${SCRIPT_NAME}" | cut -d "-" -f 1)"
 
-SUPPORTED_TOOL_NAMES=(("aws" "az" "gcloud" "bq" "gsutil" "terraform" "java")
+SUPPORTED_TOOL_NAMES=("aws" "az" "gcloud" "bq" "gsutil" "terraform" "java")
 
 if [ ! -L "${BASH_SOURCE[0]}" ]
 then
